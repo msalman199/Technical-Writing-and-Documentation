@@ -1,0 +1,140 @@
+Design a Knowledge Base with Notion-Style Tools
+Objectives
+Deploy and configure an open-source wiki platform (BookStack) as a self-hosted knowledge base
+Architect an information taxonomy applying content classification best practices
+Implement cross-referenced documentation with tagging, glossary, and reusable content blocks
+Evaluate knowledge base usability through structured heuristic testing
+Prerequisites
+Comfortable with Linux CLI, Docker, systemd services, and reverse proxy concepts
+Understanding of information architecture principles (taxonomy vs. tagging, content hierarchy)
+Familiarity with MySQL/MariaDB basics
+Basic knowledge of Markdown and WYSIWYG editors
+Environment Setup
+Al Nafi-provisioned single Linux VM (Ubuntu 22.04 LTS recommended)
+Requires Docker Engine and Docker Compose installed
+Minimum 2GB RAM, 10GB free disk space
+Root or sudo access
+Verify environment:
+
+docker --version && docker compose version
+sudo systemctl status docker
+If Docker is not installed, install it using the official convenience script and enable the service before proceeding.
+
+Task 1: Deploy BookStack via Docker Compose
+Requirements:
+
+Deploy BookStack with a MariaDB backend using Docker Compose (no cloud dependencies)
+Persist data using named volumes (survive container restarts)
+Expose the app on a local port and confirm accessibility via browser or curl
+Architecture to implement:
+
+[BookStack App Container] <--> [MariaDB Container]
+         |
+    Named Volumes (uploads, db-data)
+         |
+    Host Port 6875 -> Container Port 80
+Design your own docker-compose.yml covering:
+
+db service (mariadb:10.6, environment vars for root password, db name, user)
+bookstack service (image: lscr.io/linuxserver/bookstack, env vars linking to db, APP_URL)
+A shared network and two volumes
+# docker-compose.yml (skeleton - complete the values)
+version: "3.8"
+services:
+  db:
+    image: mariadb:10.6
+    environment:
+      # TODO: set MYSQL_ROOT_PASSWORD, MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD
+    volumes:
+      # TODO: mount db-data volume
+  bookstack:
+    image: lscr.io/linuxserver/bookstack
+    environment:
+      # TODO: set DB_HOST, DB_USER, DB_PASS, DB_DATABASE, APP_URL
+    ports:
+      # TODO: map host:container port
+    depends_on:
+      - db
+volumes:
+  db-data:
+Bring up the stack and verify:
+
+docker compose up -d
+docker compose ps
+curl -I http://localhost:6875
+Decision point: Justify your choice of APP_URL (localhost vs. VM IP) and its effect on link generation within BookStack.
+
+Task 2: Build the Information Architecture
+Requirements — implement inside the BookStack UI:
+
+Create a Shelf named "Product Documentation"
+Create 4 Books mapped to the taxonomy: Getting Started, How-To Guides, Reference, Troubleshooting
+Within these books, create Chapters for logical grouping (e.g., "Installation" chapter under Getting Started)
+Author 6 pages minimum, distributed across all 4 books, each containing:
+A short intro paragraph
+At least one reusable content block (BookStack's "Page Templates" or embedded content)
+Internal cross-links to at least 2 other pages (use BookStack's @ page-link syntax or link picker)
+Content distribution matrix (design your own topics):
+
+Book	Min Pages	Example Topics (choose your own)
+Getting Started	2	Overview, Installation
+How-To Guides	2	Task walkthroughs
+Reference	1	API/config reference
+Troubleshooting	1	Common errors
+Tagging system:
+
+Apply BookStack's built-in Tags feature (name/value pairs) to every page — minimum 2 tags per page (e.g., audience:beginner, component:auth)
+Use the Tags search/filter to validate consistent taxonomy usage
+Glossary implementation:
+
+Create a dedicated Book called "Glossary"
+Add a single page structured as an alphabetized term list, OR use one page per term with cross-links from content pages back to glossary entries
+Minimum 8 glossary terms tied to your documentation content
+Task 3: Landing Page, Navigation, and Cross-Linking
+Requirements:
+
+Configure BookStack's homepage setting (Settings > Customization) to display a custom landing page or the Shelf view
+Edit the top navigation to include quick links to all 4 taxonomy books and the Glossary
+Ensure at least 3 pages contain "Related Articles" sections linking across different books (not just within the same book)
+Design decisions to document (in a short README or wiki page):
+
+Why you chose shelf-first vs. book-first navigation
+Trade-offs between deep chapter nesting vs. flat page structures for findability
+How tags complement (not duplicate) the taxonomy
+Task 4: Usability Testing (First-Time User Simulation)
+Method:
+
+Log out or use a private/incognito browser session with a viewer-role account (create one via Settings > Users)
+Perform 3 realistic tasks as a first-time user, e.g.:
+Find how to resolve a specific error using only navigation (no search)
+Locate a glossary term referenced from a How-To page
+Use global search to find a Reference page
+Deliverable:
+
+Produce a short usability report (markdown file, 1 page) capturing:
+Task completion time/success (pass/fail)
+Navigation friction points observed
+2–3 concrete IA improvements you would implement
+# Save your report on the VM for verification
+mkdir -p ~/kb-lab && nano ~/kb-lab/usability_report.md
+Verification
+Run these checks on the same machine:
+
+# Confirm containers are running and healthy
+docker compose ps
+
+# Confirm BookStack DB has expected content (approximate check)
+docker compose exec db mysql -u root -p -e \
+  "USE bookstackapp; SELECT COUNT(*) FROM pages;"
+
+# Confirm report file exists
+ls -l ~/kb-lab/usability_report.md
+Manual verification checklist:
+
+ 4 taxonomy books + 1 Glossary book exist under the Shelf
+ 6+ pages created, each with 2+ tags and 2+ internal cross-links
+ Glossary contains 8+ terms
+ Landing page/navigation exposes all books
+ Usability report documents 3 tasks and improvement recommendations
+Conclusion
+In this lab, you deployed a self-hosted BookStack knowledge base using Docker Compose, architected a four-category documentation taxonomy backed by a glossary, and implemented tagging and cross-linking to model reusable, discoverable content — mirroring Notion-style knowledge management with fully open-source tooling. You then validated your design decisions through structured usability testing, simulating a first-time user journey to identify navigation and findability gaps. These skills directly support the Documentation Specialist and Knowledge Base Manager roles and reinforce IA competencies assessed under the STC CPTC – Practitioner Level certification.
