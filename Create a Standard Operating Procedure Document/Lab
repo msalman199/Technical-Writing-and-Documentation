@@ -1,0 +1,154 @@
+Create a Standard Operating Procedure Document
+Learning Objectives
+By the end of this lab, you will be able to:
+
+Plan the scope of a repeatable business process for documentation
+Build a structured SOP template using Markdown
+Draft numbered procedure steps with decision points
+Create a RACI responsibility matrix
+Review an SOP against a quality checklist
+Convert an SOP into PDF and HTML formats using open-source tools
+Prerequisites
+Basic familiarity with a Linux terminal (opening a terminal, typing commands)
+No prior technical writing experience required
+A text editor (we will use nano, pre-installed on most Linux systems)
+Environment Setup
+Al Nafi provides a single Linux machine via Start Lab. All work happens on this machine — no external cloud accounts needed.
+
+Start your lab machine and open a terminal.
+Update packages and install Pandoc (used to convert Markdown to PDF/HTML):
+sudo apt update
+sudo apt install -y pandoc texlive-latex-base texlive-fonts-recommended
+Create a working directory:
+mkdir -p ~/sop-lab
+cd ~/sop-lab
+Tasks
+Task 1: Identify the Business Process and Scope
+Choose a simple repeatable process. We will use Employee Onboarding as the example.
+
+Create a scope notes file:
+
+nano scope-notes.txt
+Add these lines (edit as needed):
+
+Process Name: Employee Onboarding
+Scope: Covers new hire's first week, from offer acceptance to system access setup.
+Out of Scope: Long-term performance reviews.
+Save with Ctrl+O, Enter, then exit with Ctrl+X.
+
+Task 2: Create the SOP Template
+Create the main SOP file in Markdown:
+
+nano sop-onboarding.md
+Copy this starter template and fill in the blanks (marked with TODO):
+
+# Standard Operating Procedure: Employee Onboarding
+
+## 1. Purpose
+<!-- TODO: Explain WHY this SOP exists in 1-2 sentences -->
+
+## 2. Scope
+<!-- TODO: Paste scope info from scope-notes.txt -->
+
+## 3. Responsibilities
+<!-- TODO: List roles involved, e.g. HR Manager, IT Admin, Direct Manager -->
+
+## 4. Procedure Steps
+<!-- Steps go in Task 3 -->
+
+## 5. References
+<!-- TODO: List related documents, e.g. "Employee Handbook v2.1" -->
+
+## 6. Revision History
+
+| Version | Date       | Author | Changes         |
+|---------|------------|--------|-----------------|
+| 0.1     | 2024-01-01 | Your Name | Initial draft |
+Save and exit.
+
+Task 3: Draft Procedure Steps with Decision Points
+Open the file again and replace the ## 4. Procedure Steps section with numbered steps. Use this pattern for decision points:
+
+## 4. Procedure Steps
+
+1. HR sends offer letter to candidate.
+2. Candidate accepts offer.
+   - If candidate declines, notify hiring manager and close the process.
+3. HR creates employee record in HR system.
+4. IT Admin creates system accounts (email, VPN).
+   - If access request fails, escalate to IT Support Lead.
+5. Direct Manager schedules first-day orientation.
+6. New hire completes mandatory compliance training.
+7. HR confirms onboarding completion checklist is signed off.
+This shows a basic decision branch pattern: main step, then an indented - If... then... line for conditional handling.
+
+Task 4: Add a RACI Matrix
+Insert a new section before "References" called "Roles and Responsibilities Matrix":
+
+## 4a. Roles and Responsibilities (RACI) Matrix
+
+| Task                        | HR | IT Admin | Manager | New Hire |
+|-----------------------------|----|----------|---------|----------|
+| Send offer letter           | R  | -        | A       | I        |
+| Create system accounts      | I  | R        | -       | I        |
+| Schedule orientation        | I  | -        | R       | I        |
+| Complete compliance training| I  | -        | I       | R        |
+
+R = Responsible, A = Accountable, C = Consulted, I = Informed
+Save the file.
+
+Task 5: Peer Review Against a Quality Checklist
+Create a checklist file and review your SOP manually:
+
+nano checklist.md
+Paste the checklist:
+
+# SOP Quality Checklist
+
+- [ ] Purpose is clear and one-line specific
+- [ ] Scope defines what is included and excluded
+- [ ] All roles in Procedure Steps appear in Responsibilities section
+- [ ] Steps are numbered sequentially
+- [ ] At least one decision point (if/then) is documented
+- [ ] RACI matrix covers all major steps
+- [ ] Revision History has at least one entry
+Go through your sop-onboarding.md file and manually mark each box [x] if satisfied. Fix any gaps in sop-onboarding.md before continuing.
+
+Task 6: Publish as PDF and HTML
+Convert your finished Markdown SOP into both formats using Pandoc:
+
+# Convert to HTML
+pandoc sop-onboarding.md -o sop-onboarding.html
+
+# Convert to PDF
+pandoc sop-onboarding.md -o sop-onboarding.pdf
+List the generated files to confirm:
+
+ls -l sop-onboarding.*
+You should see sop-onboarding.md, sop-onboarding.html, and sop-onboarding.pdf.
+
+Verification
+Run these checks to confirm successful completion:
+
+Confirm all files exist:
+ls ~/sop-lab
+Expected output includes: scope-notes.txt, sop-onboarding.md, checklist.md, sop-onboarding.html, sop-onboarding.pdf
+
+View the HTML file content in the terminal:
+cat sop-onboarding.html | head -20
+You should see HTML tags like <h1>, <table>.
+
+Check the PDF was created with content (non-zero size):
+ls -lh sop-onboarding.pdf
+File size should be greater than 0 KB (typically 20-100 KB).
+
+Open the HTML file in a browser (if GUI available):
+xdg-open sop-onboarding.html
+Troubleshooting Tips
+Pandoc PDF error about LaTeX: Re-run sudo apt install -y texlive-latex-base and try again.
+"command not found: pandoc": Confirm installation completed with pandoc --version.
+Table not rendering in PDF: Ensure there are no extra spaces before | characters in Markdown tables.
+nano not saving: Make sure to press Ctrl+O then Enter, then Ctrl+X to exit.
+File not found errors: Confirm you are in the ~/sop-lab directory using pwd.
+Conclusion
+In this lab, you completed the full SOP documentation lifecycle on a single Linux machine. You identified a business process (Employee Onboarding), scoped it, and built a structured SOP using a standard template with Purpose, Scope, Responsibilities, Procedure Steps, References, and Revision History sections. You drafted numbered steps with decision points, created a RACI matrix to clarify ownership, reviewed your document against a quality checklist, and published the final SOP as both PDF and HTML using Pandoc. These skills directly support the Documentation Specialist and Business Analyst roles and align with CPTC Foundation-level competencies in structured technical documentation.
