@@ -1,0 +1,183 @@
+Write a Structured Technical User Guide in Markdown
+Learning Objectives
+By the end of this lab, you will be able to:
+
+Install and use a Markdown editor on Linux
+Analyze a target audience for technical documentation
+Structure a user guide with standard sections
+Write clear installation and usage instructions using plain language
+Add a glossary and cross-reference links in Markdown
+Check and improve document readability
+Convert a Markdown file to HTML
+Prerequisites
+Basic familiarity with the Linux terminal (opening a terminal, running simple commands)
+No prior technical writing experience required
+A single Linux machine (provided via Start Lab)
+Internet connection for installing packages
+Environment Setup
+This lab uses a single Linux machine provided by Al Nafi via Start Lab. No cloud services or external accounts are required. All tools used are free and open-source.
+
+Open a terminal on your lab machine before starting Task 1.
+
+Task 1: Install a Markdown Editor
+We will use VS Code with the built-in Markdown Preview feature (no extra extension required for basic preview).
+
+# Update package lists
+sudo apt update
+
+# Install required dependencies
+sudo apt install -y wget gpg apt-transport-https
+
+# Download and install VS Code (Debian/Ubuntu-based systems)
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
+sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+sudo apt update
+sudo apt install -y code
+Verify installation:
+
+code --version
+Expected outcome: You should see three lines of output (version number, commit hash, architecture).
+Tip: If code command is unavailable, restart your terminal session.
+
+Task 2: Define Target Audience
+Create a working directory and an audience analysis file for a sample CLI tool (we will document a fictional tool called filetool).
+
+# Create project folder
+mkdir -p ~/user-guide-lab
+cd ~/user-guide-lab
+
+# Create audience analysis file
+touch audience-analysis.md
+Open audience-analysis.md in VS Code:
+
+code audience-analysis.md
+Add the following content (fill in the blanks yourself):
+
+# Audience Analysis: filetool CLI
+
+- **Primary audience:** _(e.g., junior developers, sysadmins)_
+- **Technical skill level:** _(beginner / intermediate / advanced)_
+- **Goals:** What does the reader want to achieve with filetool?
+- **Environment:** Operating system, terminal familiarity
+- **Pain points:** What confuses new users of CLI tools?
+Save the file (Ctrl+S).
+
+Task 3: Draft the User Guide Outline
+Create the main guide file:
+
+touch user-guide.md
+code user-guide.md
+Add this outline skeleton — fill in placeholder text where indicated:
+
+# filetool User Guide
+
+## Introduction
+<!-- TODO: One paragraph describing what filetool does -->
+
+## Prerequisites
+<!-- TODO: List required software/OS -->
+
+## Installation
+<!-- TODO: Step-by-step install instructions -->
+
+## Usage
+<!-- TODO: Numbered steps showing common commands -->
+
+## Troubleshooting
+<!-- TODO: Common errors and fixes -->
+
+## FAQ
+<!-- TODO: 3-5 question/answer pairs -->
+
+## Glossary
+<!-- TODO: Key terms and definitions -->
+Save the file.
+
+Task 4: Write Installation and Usage Sections
+Replace the placeholders in the Installation and Usage sections using plain language and active voice.
+
+Example pattern to follow:
+
+## Installation
+
+1. Open a terminal.
+2. Run the following command to install filetool:
+   ```bash
+   sudo apt install filetool
+Confirm the installation:
+filetool --version
+Note: If the command is not found, check that /usr/local/bin is in your PATH.
+
+Usage
+Run filetool list to view all files in the current directory.
+Run filetool rename old.txt new.txt to rename a file.
+Run filetool --help to see all available options.
+
+Use active voice ("Run the command" not "The command should be run") and numbered steps for procedures.
+
+**Callout box syntax reminder** (Markdown blockquote used as a note/warning):
+```markdown
+> **Warning:** Back up your files before running batch operations.
+Task 5: Add Glossary and Cross-References
+Update the Glossary section:
+
+## Glossary
+
+- **CLI**: Command Line Interface, a text-based way to interact with software.
+- **Flag**: An optional parameter (e.g., `--help`) that modifies command behavior.
+- **PATH**: An environment variable listing directories the shell searches for executables.
+Add cross-reference links between sections using Markdown anchor links:
+
+See the [Installation](#installation) section before proceeding to [Usage](#usage).
+
+Refer to the [Glossary](#glossary) for term definitions.
+Tip: Markdown anchors are auto-generated from headings — lowercase, spaces replaced with hyphens.
+
+Task 6: Check Readability
+Install a simple local readability tool (write-good, an open-source npm-based prose linter):
+
+# Install Node.js and npm if not already installed
+sudo apt install -y nodejs npm
+
+# Install write-good globally
+sudo npm install -g write-good
+Run it against your guide:
+
+write-good user-guide.md
+Expected outcome: Terminal prints suggestions (e.g., passive voice, wordy phrases) or nothing if the text is clean.
+Revise flagged sentences in user-guide.md to be shorter and more direct. Re-run write-good until output is minimal.
+
+Task 7: Export Markdown to HTML
+Install pandoc, an open-source document converter:
+
+sudo apt install -y pandoc
+Convert your guide:
+
+pandoc user-guide.md -o user-guide.html
+Open the HTML file in a browser to verify formatting:
+
+xdg-open user-guide.html
+Expected outcome: A browser tab opens showing your formatted guide with headings, lists, and blockquotes rendered correctly.
+Troubleshooting:
+
+If xdg-open fails, manually navigate to the file path in your file manager or run firefox user-guide.html.
+If headings look unstyled, this is normal for plain pandoc output — formatting is minimal by default.
+Verification
+Confirm your lab is complete by checking the following on your machine:
+
+# Confirm all files exist
+ls ~/user-guide-lab
+# Expected: audience-analysis.md  user-guide.md  user-guide.html
+
+# Confirm VS Code is installed
+code --version
+
+# Confirm pandoc conversion worked
+file user-guide.html
+# Expected output includes: HTML document text
+user-guide.md contains all six sections (Introduction, Prerequisites, Installation, Usage, Troubleshooting, FAQ) plus Glossary
+write-good runs without major warnings
+user-guide.html opens correctly in a browser
+Conclusion
+In this lab, you installed a Markdown editor on a Linux machine, analyzed a target audience, and drafted a structured technical user guide with standard sections (Introduction, Prerequisites, Installation, Usage, Troubleshooting, FAQ, and Glossary). You practiced writing in plain language and active voice, added cross-reference links, checked readability with an open-source linter, and exported your final document to HTML for verification. These skills form the foundation of professional technical writing and align with the STC CPTC Foundation-level competencies in document structure and clarity.
